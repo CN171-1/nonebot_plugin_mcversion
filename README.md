@@ -1,93 +1,44 @@
+# README
+<!--
 <div align="center">
-  <a href="https://v2.nonebot.dev/store"><img src="https://github.com/A-kirami/nonebot-plugin-template/blob/resources/nbp_logo.png" width="180" height="180" alt="NoneBotPluginLogo"></a>
-  <br>
-  <p><img src="https://github.com/A-kirami/nonebot-plugin-template/blob/resources/NoneBotPlugin.svg" width="240" alt="NoneBotPluginText"></p>
+  <img src="your_project_logo.png" alt="Logo" width="200">
 </div>
+-->
+## 描述
 
-<div align="center">
+该项目是一个使用 Python 编写的简单程序，用于获取 Minecraft 最新版本信息并定时检查更新，并在指定的群组内发送消息通知。
 
-# nonebot-plugin-example
+## 功能特点
 
-_✨ NoneBot 插件简单描述 ✨_
+- 获取最新的 Minecraft 版本信息
+- 定时检查 Minecraft 是否有新版本
+- 在指定群组内发送更新通知消息
 
+<!--
+## 安装
 
-<a href="./LICENSE">
-    <img src="https://img.shields.io/github/license/owner/nonebot-plugin-example.svg" alt="license">
-</a>
-<a href="https://pypi.python.org/pypi/nonebot-plugin-example">
-    <img src="https://img.shields.io/pypi/v/nonebot-plugin-example.svg" alt="pypi">
-</a>
-<img src="https://img.shields.io/badge/python-3.8+-blue.svg" alt="python">
+（待补充）
 
-</div>
+-->
+## 使用
 
-这是一个 nonebot2 插件项目的模板库, 你可以直接使用本模板创建你的 nonebot2 插件项目的仓库
+1. 使用 `mcver` , `mcversion` ,`MC版本` 来获取当前最新MC版本
+2. 程序会每分钟自动检查 Minecraft 是否有新版本，若有则会在指定的群组内发送消息。
 
-模板库使用方法:
-1. 点击仓库中的 "Use this template" 按钮, 输入仓库名与描述, 点击 "  Create repository from template" 创建仓库
-2. 在创建好的新仓库中, 在 "Add file" 菜单中选择 "Create new file", 在新文件名处输入`LICENSE`, 此时在右侧会出现一个 "Choose a license template" 按钮, 点击此按钮选择开源协议模板, 然后在最下方提交新文件到主分支
-3. 全局替换`owner`为仓库所有者ID; 全局替换`nonebot-plugin-example`为插件名; 全局替换`nonebot_plugin_example`为包名; 修改 python 徽标中的版本为你插件的运行所需版本
-4. 修改 README 中的插件名和插件描述, 并在下方填充相应的内容
+## 配置
 
-## 📖 介绍
+在配置文件中可以进行以下设置：
 
-这里是插件的详细介绍部分
+- `mcver_group_id`：指定检查 Minecraft 更新后发送消息的群组 ID。
 
-## 💿 安装
+```python
+mcver_group_id = [123456, 789012]
+```
 
-<details>
-<summary>使用 nb-cli 安装</summary>
-在 nonebot2 项目的根目录下打开命令行, 输入以下指令即可安装
+## 鸣谢
 
-    nb plugin install nonebot-plugin-example
+- [nonebot_plugin_apscheduler](https://github.com/nonebot/nonebot-plugin-apscheduler) - NoneBot 的定时任务插件
 
-</details>
+## 反馈
 
-<details>
-<summary>使用包管理器安装</summary>
-在 nonebot2 项目的插件目录下, 打开命令行, 根据你使用的包管理器, 输入相应的安装命令
-
-<details>
-<summary>pip</summary>
-
-    pip install nonebot-plugin-example
-</details>
-<details>
-<summary>pdm</summary>
-
-    pdm add nonebot-plugin-example
-</details>
-<details>
-<summary>poetry</summary>
-
-    poetry add nonebot-plugin-example
-</details>
-<details>
-<summary>conda</summary>
-
-    conda install nonebot-plugin-example
-</details>
-
-打开 nonebot2 项目根目录下的 `pyproject.toml` 文件, 在 `[tool.nonebot]` 部分追加写入
-
-    plugins = ["nonebot_plugin_example"]
-
-</details>
-
-## ⚙️ 配置
-
-在 nonebot2 项目的`.env`文件中添加下表中的必填配置
-
-| 配置项 | 必填 | 默认值 | 说明 |
-|:-----:|:----:|:----:|:----:|
-| 配置项1 | 是 | 无 | 配置说明 |
-| 配置项2 | 否 | 无 | 配置说明 |
-
-## 🎉 使用
-### 指令表
-| 指令 | 权限 | 需要@ | 范围 | 说明 |
-|:-----:|:----:|:----:|:----:|:----:|
-| 指令1 | 主人 | 否 | 私聊 | 指令说明 |
-| 指令2 | 群员 | 是 | 群聊 | 指令说明 |
-### 效果图
-如果有效果图的话
+- 问题跟踪：[GitHub Issues](https://github.com/your_username/your_project/issues)
