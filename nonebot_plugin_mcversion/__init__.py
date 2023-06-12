@@ -10,7 +10,7 @@ env_config = Config(**get_driver().config.dict())
 mcver_group_id = list(env_config.mcver_group_id)
 
 # 定义命令“mcver”
-mcver = on_command('mcver', aliases={'mcversion', 'MC版本'}, priority=50)
+mcver = on_command('mcver',priority=50)
 
 # 处理命令“mcver”
 @mcver.handle()
@@ -70,25 +70,26 @@ async def check_mc_update(bot: Bot):
                 message=Message(f'发现MC更新：{latest_release} (Release)\n时间：{release_time}')
             )
     if latest_snapshot != old_snapshot:
-        # 更新版本信息
-        with open('data/latest_snapshot.txt', 'w') as f:
-            f.write(latest_snapshot)
-        # 获取版本发布时间
-        snapshot_time = ''
-        for version in data['versions']:
-            if version['id'] == latest_snapshot:
-                snapshot_time = version['releaseTime']
-                break
-        snapshot_time = datetime.strptime(snapshot_time, '%Y-%m-%dT%H:%M:%S%z')
-        snapshot_time = snapshot_time.replace(hour=snapshot_time.hour+8)
-        snapshot_time = snapshot_time.strftime('%Y-%m-%dT%H:%M:%S+08')
-        # 发送群消息
-        for i in mcver_group_id:
-            int (i)
-            await bot.send_group_msg(
-                group_id=i,
-                message=Message(f'发现MC更新：{latest_snapshot} (Snapshot)\n时间：{snapshot_time}')
-            )
+        if latest_snapshot != latest_release:
+            # 更新版本信息
+            with open('data/latest_snapshot.txt', 'w') as f:
+                f.write(latest_snapshot)
+            # 获取版本发布时间
+            snapshot_time = ''
+            for version in data['versions']:
+                if version['id'] == latest_snapshot:
+                    snapshot_time = version['releaseTime']
+                    break
+            snapshot_time = datetime.strptime(snapshot_time, '%Y-%m-%dT%H:%M:%S%z')
+            snapshot_time = snapshot_time.replace(hour=snapshot_time.hour+8)
+            snapshot_time = snapshot_time.strftime('%Y-%m-%dT%H:%M:%S+08')
+            # 发送群消息
+            for i in mcver_group_id:
+                int(i)
+                await bot.send_group_msg(
+                    group_id=i,
+                    message=Message(f'发现MC更新：{latest_snapshot} (Snapshot)\n时间：{snapshot_time}')
+                )
 # 获取nonebot的机器人实例
 from nonebot import get_bots
 # 定义定时任务，每分钟检查一次Minecraft更新
