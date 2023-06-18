@@ -10,7 +10,7 @@ env_config = Config(**get_driver().config.dict())
 mcver_group_id = list(env_config.mcver_group_id)
 
 # 定义命令“mcver”
-mcver = on_command('mcver',priority=50)
+mcver = on_command('mcver', aliases={'mcversion', 'MC版本'}, priority=50)
 
 # 处理命令“mcver”
 @mcver.handle()
