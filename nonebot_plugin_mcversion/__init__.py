@@ -33,63 +33,30 @@ async def check_mc_update(bot: Bot):
     url = 'https://launchermeta.mojang.com/mc/game/version_manifest.json'
     response = requests.get(url)
     data = response.json()
-    latest_release = data['latest']['release']
-    latest_snapshot = data['latest']['snapshot']
-    if not os.path.exists('data/latest_release.txt'):# 检查data目录下是否有latest_release.txt文件
-    # 若没有，则创建一个latest_release.txt文件
-        with open('data/latest_release.txt', 'w') as f:
-            f.write(latest_release)
-    if not os.path.exists('data/latest_snapshot.txt'):# 检查data目录下是否有latest_snapshot.txt文件
-    # 若没有，则创建一个latest_snapshot.txt文件
-        with open('data/latest_snapshot.txt', 'w') as f:
-            f.write(latest_snapshot)
-    # 读取旧版本信息
-    with open('data/latest_release.txt', 'r') as f:
-        old_release = f.read()
-    with open('data/latest_snapshot.txt', 'r') as f:
-        old_snapshot = f.read()
-    # 检查是否有新版本
-    if latest_release != old_release:
-        # 更新版本信息
-        with open('data/latest_release.txt', 'w') as f:
-            f.write(latest_release)
-        # 获取版本发布时间
-        release_time = ''
-        for version in data['versions']:
-            if version['id'] == latest_release:
-                release_time = version['releaseTime']
+    latest_version = data["versions"][0]["id"]
+    if not os.path.exists('data/latest_version.txt'):
+        with open('data/latest_version.txt', 'w') as f:
+            f.write(latest_version)
+    with open('data/latest_version.txt', 'r') as f:
+        old_version = f.read()
+    if latest_version != old_version:
+        with open('data/latest_version.txt', 'w') as f:
+            f.write(latest_version)
+        release_time =''
+        for version in data["versions"]:
+            if version["id"] == latest_version:
+                release_time = version["releaseTime"]
                 break
         release_time = datetime.strptime(release_time, '%Y-%m-%dT%H:%M:%S%z')
         release_time = release_time.replace(hour=release_time.hour+8)
         release_time = release_time.strftime('%Y-%m-%dT%H:%M:%S+08')
-        # 发送群消息
         for i in mcver_group_id:
             int (i)
             await bot.send_group_msg(
                 group_id=i,
-                message=Message(f'发现MC更新：{latest_release} (Release)\n时间：{release_time}')
+                message=Message(f'发现MC更新：{latest_version} ({version["type"]})\n时间：{release_time}')
             )
-    if latest_snapshot != old_snapshot:
-        if latest_snapshot != latest_release:
-            # 更新版本信息
-            with open('data/latest_snapshot.txt', 'w') as f:
-                f.write(latest_snapshot)
-            # 获取版本发布时间
-            snapshot_time = ''
-            for version in data['versions']:
-                if version['id'] == latest_snapshot:
-                    snapshot_time = version['releaseTime']
-                    break
-            snapshot_time = datetime.strptime(snapshot_time, '%Y-%m-%dT%H:%M:%S%z')
-            snapshot_time = snapshot_time.replace(hour=snapshot_time.hour+8)
-            snapshot_time = snapshot_time.strftime('%Y-%m-%dT%H:%M:%S+08')
-            # 发送群消息
-            for i in mcver_group_id:
-                int(i)
-                await bot.send_group_msg(
-                    group_id=i,
-                    message=Message(f'发现MC更新：{latest_snapshot} (Snapshot)\n时间：{snapshot_time}')
-                )
+
 # 获取nonebot的机器人实例
 from nonebot import get_bots
 # 定义定时任务，每分钟检查一次Minecraft更新
