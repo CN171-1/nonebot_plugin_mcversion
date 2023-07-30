@@ -1,6 +1,6 @@
 [project]
 name = "nonebot-plugin-mcversion"
-version = "0.2.1"
+version = "0.2.2"
 description = "NoneBot2 plugin for CheckMCupdate"
 authors = [
     {name = "CN171-1", email = "3428166361@qq.com"},

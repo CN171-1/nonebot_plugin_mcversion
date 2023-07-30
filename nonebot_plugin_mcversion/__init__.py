@@ -1,6 +1,6 @@
 # 导入必要的库
 import os
-import requests
+import httpx
 from datetime import datetime
 from nonebot import on_command, get_driver, require, Config
 from nonebot.adapters.onebot.v11 import Bot
@@ -16,8 +16,8 @@ mcver = on_command('mcver', aliases={'mcversion', 'MC版本'}, priority=50)
 @mcver.handle()
 async def mcver_handle():
     # 获取Minecraft版本信息
-    url = 'https://launchermeta.mojang.com/mc/game/version_manifest.json'
-    response = requests.get(url)
+    async with httpx.AsyncClient() as client:
+        response = await client.get("http://launchermeta.mojang.com/mc/game/version_manifest.json")
     data = response.json()
     latest_release = data['latest']['release']
     latest_snapshot = data['latest']['snapshot']
@@ -30,23 +30,17 @@ scheduler = require('nonebot_plugin_apscheduler').scheduler
 # 定义异步函数，用于检查Minecraft更新
 async def check_mc_update(bot: Bot):
     # 获取Minecraft版本信息
-    url = 'https://launchermeta.mojang.com/mc/game/version_manifest.json'
-    response = requests.get(url)
+    async with httpx.AsyncClient() as client:
+        response = await client.get("http://launchermeta.mojang.com/mc/game/version_manifest.json")
     data = response.json()
-    latest_version = data["versions"][0]["id"]
+    version = data["versions"][0]
     if not os.path.exists('data/latest_version.txt'):
         with open('data/latest_version.txt', 'w') as f:
-            f.write(latest_version)
+            f.write(version["id"])
     with open('data/latest_version.txt', 'r') as f:
         old_version = f.read()
-    if latest_version != old_version:
-        with open('data/latest_version.txt', 'w') as f:
-            f.write(latest_version)
-        release_time =''
-        for version in data["versions"]:
-            if version["id"] == latest_version:
-                release_time = version["releaseTime"]
-                break
+    if version["id"] != old_version:
+        release_time = version["releaseTime"]
         release_time = datetime.strptime(release_time, '%Y-%m-%dT%H:%M:%S%z')
         release_time = release_time.replace(hour=release_time.hour+8)
         release_time = release_time.strftime('%Y-%m-%dT%H:%M:%S+08')
@@ -54,8 +48,10 @@ async def check_mc_update(bot: Bot):
             int (i)
             await bot.send_group_msg(
                 group_id=i,
-                message=Message(f'发现MC更新：{latest_version} ({version["type"]})\n时间：{release_time}')
+                message=Message(f'发现MC更新：{version["id"]} ({version["type"]})\n时间：{release_time}')
             )
+        with open('data/latest_version.txt', 'w') as f:
+            f.write(version["id"])
 
 # 获取nonebot的机器人实例
 from nonebot import get_bots
