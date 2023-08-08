@@ -3,9 +3,10 @@ from nonebot.plugin import PluginMetadata
 __plugin_meta__ = PluginMetadata(
     name="MC版本更新检测",
     description="一个用于检测MC最新版本的插件",
-    usage="使用mcver以获取最新版本号",
+    usage="使用 mcver 以获取最新版本号",
     type="application",
     homepage="https://github.com/CN171-1/nonebot_plugin_mcversion",
+    supported_adapters={"~onebot.v11"},
 )
 
 # 导入必要的库
