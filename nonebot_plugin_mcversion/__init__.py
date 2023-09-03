@@ -13,7 +13,7 @@ __plugin_meta__ = PluginMetadata(
 import os
 import httpx
 from datetime import datetime
-from nonebot import on_command, get_driver, require, Config
+from nonebot import on_command, get_driver, get_bots, require, Config, logger
 from nonebot.adapters.onebot.v11 import Bot
 from nonebot.adapters.onebot.v11.message import Message
 
@@ -33,7 +33,7 @@ async def mcver_handle():
     latest_release = data['latest']['release']
     latest_snapshot = data['latest']['snapshot']
     # 发送消息
-    await mcver.finish(message = Message(f'最新正式版：{latest_release}\n最新快照版：{latest_snapshot}'))
+    await mcver.finish(message=Message(f'最新正式版：{latest_release}\n最新快照版：{latest_snapshot}'))
 
 # 获取nonebot的调度器
 scheduler = require('nonebot_plugin_apscheduler').scheduler
@@ -53,21 +53,26 @@ async def check_mc_update(bot: Bot):
     if version["id"] != old_version:
         release_time = version["releaseTime"]
         release_time = datetime.strptime(release_time, '%Y-%m-%dT%H:%M:%S%z')
-        release_time = release_time.replace(hour=release_time.hour+8)
+        release_time = release_time.replace(hour=release_time.hour + 8)
         release_time = release_time.strftime('%Y-%m-%dT%H:%M:%S+08')
         for i in mcver_group_id:
-            int (i)
+            int(i)
             await bot.send_group_msg(
                 group_id=i,
                 message=Message(f'发现MC更新：{version["id"]} ({version["type"]})\n时间：{release_time}')
             )
         with open('data/latest_version.txt', 'w') as f:
             f.write(version["id"])
+        logger.success("已发现并成功推送MC版本更新信息")
 
-# 获取nonebot的机器人实例
-from nonebot import get_bots
 # 定义定时任务，每分钟检查一次Minecraft更新
 @scheduler.scheduled_job('interval', minutes=1)
 async def mc_update_check():
-    (bot, ) = get_bots().values()
-    await check_mc_update(bot)
+    bots = get_bots()
+    bot = None  # 初始化bot为None
+    if bots:
+        bot = list(bots.values())[0]  # 获取第一个机器人实例
+    if bot:
+        await check_mc_update(bot)
+    else:
+        logger.error("未找到机器人实例,请确保GO-CQHTTP已连接")
