@@ -75,4 +75,4 @@ async def mc_update_check():
     if bot:
         await check_mc_update(bot)
     else:
-        logger.error("未找到机器人实例,请确保GO-CQHTTP已连接")
+        logger.error("未找到机器人实例,请确保NoneBot已与QQ服务器建立连接")
